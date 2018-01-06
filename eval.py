@@ -33,6 +33,7 @@ def eval():
     model.load_state_dict(torch.load(hp.model_dir + '/model_epoch_%02d' % hp.eval_epoch + '.pth'))
     print('Model Loaded.')
     model.eval()
+    model.cuda()
     # Inference
     if not os.path.exists('results'):
         os.mkdir('results')
@@ -45,8 +46,8 @@ def eval():
             targets = Targets[i * hp.batch_size: (i + 1) * hp.batch_size]
 
             # Autoregressive inference
-            x_ = Variable(torch.LongTensor(x))
-            preds_t = torch.LongTensor(np.zeros((hp.batch_size, hp.maxlen), np.int32))
+            x_ = Variable(torch.LongTensor(x).cuda())
+            preds_t = torch.LongTensor(np.zeros((hp.batch_size, hp.maxlen), np.int32)).cuda()
             preds = Variable(preds_t)
             for j in range(hp.maxlen):
 
@@ -77,6 +78,5 @@ def eval():
 if __name__ == '__main__':
     eval()
     print('Done')
-
 
 

@@ -79,7 +79,7 @@ class AttModel(nn.Module):
 
     def forward(self, x, y):
         # define decoder inputs
-        self.decoder_inputs = torch.cat([Variable(torch.ones(y[:, :1].size()) * 2).long(), y[:, :-1]], dim=-1)  # 2:<S>
+        self.decoder_inputs = torch.cat([Variable(torch.ones(y[:, :1].size()).cuda() * 2).long(), y[:, :-1]], dim=-1)  # 2:<S>
 
         # Encoder
         self.enc = self.enc_emb(x)
@@ -88,7 +88,7 @@ class AttModel(nn.Module):
             self.enc += self.enc_positional_encoding(x)
         else:
             self.enc += self.enc_positional_encoding(
-                Variable(torch.unsqueeze(torch.arange(0, x.size()[1]), 0).repeat(x.size(0), 1).long()))
+                Variable(torch.unsqueeze(torch.arange(0, x.size()[1]), 0).repeat(x.size(0), 1).long().cuda()))
         self.enc = self.enc_dropout(self.enc)
         # Blocks
         for i in range(self.hp.num_blocks):
@@ -102,7 +102,7 @@ class AttModel(nn.Module):
             self.dec += self.dec_positional_encoding(self.decoder_inputs)
         else:
             self.dec += self.dec_positional_encoding(
-                Variable(torch.unsqueeze(torch.arange(0, self.decoder_inputs.size()[1]), 0).repeat(self.decoder_inputs.size(0), 1).long()))
+                Variable(torch.unsqueeze(torch.arange(0, self.decoder_inputs.size()[1]), 0).repeat(self.decoder_inputs.size(0), 1).long().cuda()))
 
         # Dropout
         self.dec = self.dec_dropout(self.dec)
@@ -123,7 +123,7 @@ class AttModel(nn.Module):
         self.acc = torch.sum(self.preds.eq(y).float().view(-1) * self.istarget) / torch.sum(self.istarget)
 
         # Loss
-        self.y_onehot = torch.zeros(self.logits.size()[0] * self.logits.size()[1], self.dec_voc)
+        self.y_onehot = torch.zeros(self.logits.size()[0] * self.logits.size()[1], self.dec_voc).cuda()
         self.y_onehot = Variable(self.y_onehot.scatter_(1, y.view(-1, 1).data, 1))
 
         self.y_smoothed = self.label_smoothing(self.y_onehot)

@@ -35,6 +35,7 @@ def train():
     num_batch = len(X) // hp.batch_size
     model = AttModel(hp, enc_voc, dec_voc)
     model.train()
+    model.cuda()
     torch.backends.cudnn.benchmark = True
     if not os.path.exists(hp.model_dir):
         os.makedirs(hp.model_dir)
@@ -48,13 +49,14 @@ def train():
         optimizer.load_state_dict(torch.load(hp.model_dir + '/optimizer.pth'))
     if hp.preload is not None and os.path.exists(hp.model_dir + '/model_epoch_%02d.pth' % hp.preload):
         model.load_state_dict(torch.load(hp.model_dir + '/model_epoch_%02d.pth' % hp.preload))
+
     startepoch = int(hp.preload) if hp.preload is not None else 1
     for epoch in range(startepoch, hp.num_epochs + 1):
         current_batch = 0
         for index, current_index in get_batch_indices(len(X), hp.batch_size):
             tic = time.time()
-            x_batch = Variable(torch.LongTensor(X[index]))
-            y_batch = Variable(torch.LongTensor(Y[index]))
+            x_batch = Variable(torch.LongTensor(X[index]).cuda())
+            y_batch = Variable(torch.LongTensor(Y[index]).cuda())
             toc = time.time()
             tic_r = time.time()
             torch.cuda.synchronize()

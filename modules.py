@@ -127,18 +127,18 @@ class multihead_attention(nn.Module):
         key_masks = key_masks.repeat(self.num_heads, 1)  # (h*N, T_k)
         key_masks = torch.unsqueeze(key_masks, 1).repeat(1, queries.size()[1], 1)  # (h*N, T_q, T_k)
 
-        padding = Variable(torch.ones(*outputs.size()) * (-2 ** 32 + 1))
+        padding = Variable(torch.ones(*outputs.size()).cuda() * (-2 ** 32 + 1))
         condition = key_masks.eq(0.).float()
         outputs = padding * condition + outputs * (1. - condition)
 
         # Causality = Future blinding
         if self.causality:
-            diag_vals = torch.ones(*outputs[0, :, :].size())  # (T_q, T_k)
+            diag_vals = torch.ones(*outputs[0, :, :].size()).cuda()  # (T_q, T_k)
             tril = torch.tril(diag_vals, diagonal=0)  # (T_q, T_k)
             # print(tril)
             masks = Variable(torch.unsqueeze(tril, 0).repeat(outputs.size()[0], 1, 1))  # (h*N, T_q, T_k)
 
-            padding = Variable(torch.ones(*masks.size()) * (-2 ** 32 + 1))
+            padding = Variable(torch.ones(*masks.size()).cuda() * (-2 ** 32 + 1))
             condition = masks.eq(0.).float()
             outputs = padding * condition + outputs * (1. - condition)
 
@@ -182,8 +182,7 @@ class feedforward(nn.Module):
         self.in_channels = in_channels
         self.num_units = num_units
 
-        # nn.Linear is 4x faster than nn.Conv1d, but
-        # still much slower than tensorflow implementation
+        # nn.Linear is faster than nn.Conv1d
         self.conv = False
         if self.conv:
             params = {'in_channels': self.in_channels, 'out_channels': self.num_units[0],
