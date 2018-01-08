@@ -14,6 +14,11 @@ import regex
 import random
 import torch
 
+try:
+    xrange          # Python 2
+except NameError:
+    xrange = range  # Python 3
+
 def load_de_vocab():
     vocab = [line.split()[0] for line in codecs.open('preprocessed/de.vocab.tsv', 'r', 'utf-8').read().splitlines() if int(line.split()[1])>=hp.min_cnt]
     word2idx = {word: idx for idx, word in enumerate(vocab)}

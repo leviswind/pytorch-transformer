@@ -40,7 +40,8 @@ def train():
     if not os.path.exists(hp.model_dir):
         os.makedirs(hp.model_dir)
     if hp.preload is not None and os.path.exists(hp.model_dir + '/history.pkl'):
-        history = pickle.load(file(hp.model_dir + '/history.pkl', 'r'))
+        with open(hp.model_dir + '/history.pkl') as in_file:
+            history = pickle.load(in_file)
     else:
         history = {'current_batches': 0}
     current_batches = history['current_batches']
@@ -76,7 +77,8 @@ def train():
                 print('batch loading used time %f, model forward used time %f' % (toc - tic, toc_r - tic_r))
             if current_batches % 100 == 0:
                 writer.export_scalars_to_json(hp.model_dir + '/all_scalars.json')
-        pickle.dump(history, file(hp.model_dir + '/history.pkl', 'w'))
+        with open(hp.model_dir + '/history.pkl', 'w') as out_file:
+            pickle.dump(history, out_file)
         checkpoint_path = hp.model_dir + '/model_epoch_%02d' % epoch + '.pth'
         torch.save(model.state_dict(), checkpoint_path)
         torch.save(optimizer.state_dict(), hp.model_dir + '/optimizer.pth')
