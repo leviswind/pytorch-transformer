@@ -33,7 +33,7 @@ wget -qO- https://wit3.fbk.eu/archive/2016-01//texts/de/en/de-en.tgz | tar xz; m
 ```
 * STEP 2. Adjust hyper parameters in `hyperparams.py` if necessary.
 * STEP 3. Run `prepro.py` to generate vocabulary files to the `preprocessed` folder.
-* STEP 4. Run `train.py` or download [pretrained weights](https://www.dropbox.com/s/7em8j6k1i39koiz/model_epoch_14.pth?dl=0), put it into folder './models/' and change the `eval_epoch` in `hpyerparams.py` to 14
+* STEP 4. Run `train.py` or download [pretrained weights](https://www.dropbox.com/s/iqjiuw3hkdqa6td/model_epoch_18.pth?dl=0), put it into folder './models/' and change the `eval_epoch` in `hpyerparams.py` to 18
 * STEP 5. Show loss and accuracy in tensorboard
 ```sh
 tensorboard --logdir runs
