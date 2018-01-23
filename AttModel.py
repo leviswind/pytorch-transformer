@@ -31,14 +31,14 @@ class AttModel(nn.Module):
         self.dec_voc = dec_voc
 
         # encoder
-        self.enc_emb = nn.Embedding(self.enc_voc, self.hp.hidden_units)
+        self.enc_emb = embedding(self.enc_voc, self.hp.hidden_units, scale=True)
 
         if self.hp.sinusoid:
             self.enc_positional_encoding = positional_encoding(num_units=self.hp.hidden_units,
                                                                zeros_pad=False,
                                                                scale=False)
         else:
-            self.enc_positional_encoding = nn.Embedding(self.hp.maxlen, self.hp.hidden_units)
+            self.enc_positional_encoding = embedding(self.hp.maxlen, self.hp.hidden_units, zeros_pad=False, scale=False)
         self.enc_dropout = nn.Dropout(self.hp.dropout_rate)
         for i in range(self.hp.num_blocks):
             self.__setattr__('enc_self_attention_%d' % i, multihead_attention(num_units=self.hp.hidden_units,
@@ -50,13 +50,13 @@ class AttModel(nn.Module):
                                                                      self.hp.hidden_units]))
 
         # decoder
-        self.dec_emb = nn.Embedding(self.dec_voc, self.hp.hidden_units)
+        self.dec_emb = embedding(self.dec_voc, self.hp.hidden_units, scale=True)
         if self.hp.sinusoid:
             self.dec_positional_encoding = positional_encoding(num_units=self.hp.hidden_units,
                                                                zeros_pad=False,
                                                                scale=False)
         else:
-            self.dec_positional_encoding = nn.Embedding(self.hp.maxlen, self.hp.hidden_units)
+            self.dec_positional_encoding = embedding(self.hp.maxlen, self.hp.hidden_units, zeros_pad=False, scale=False)
 
         self.dec_dropout = nn.Dropout(self.hp.dropout_rate)
         for i in range(self.hp.num_blocks):

@@ -43,22 +43,22 @@ tensorboard --logdir runs
   * Run `eval.py`.
 
 ## Results
-I got a BLEU score of 16.85.(tensorflow implementation 17.14) (Recollect I trained with a small dataset, limited vocabulary) Some of the evaluation results are as follows. Details are available in the `results` folder.
+I got a BLEU score of 16.7.(tensorflow implementation 17.14) (Recollect I trained with a small dataset, limited vocabulary) Some of the evaluation results are as follows. Details are available in the `results` folder.
 
 
 source: Ich bin nicht sicher was ich antworten soll<br>
 expected: I'm not really sure about the answer<br>
-got: I'm not sure what am I supposed to answer
+got: I'm not sure what I'm going to answer
 
 source: Was macht den Unterschied aus<br>
 expected: What makes his story different<br>
-got: What makes the difference
+got: What makes a difference
 
 source: Vielen Dank<br>
 expected: Thank you<br>
-got: Thank you very much
+got: Thank you
 
 source: Das ist ein Baum<br>
 expected: This is a tree<br>
-got: This is a tree
+got: So this is a tree
 
