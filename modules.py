@@ -272,7 +272,7 @@ class label_smoothing(nn.Module):
 if __name__ == '__main__':
     num_units = 512
     inputs = Variable(torch.randn((100, 10)))
-    outputs = position_encoding(num_units)(inputs)
+    outputs = positional_encoding(num_units)(inputs)
     outputs = multihead_attention(num_units)(outputs, outputs, outputs)
     outputs = feedforward(num_units)(outputs)
 
